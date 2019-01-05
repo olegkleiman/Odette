@@ -15,3 +15,10 @@ This is XCode project, however, you'll be able to build it from code with the li
 - libopencv_videoio
 - libopencv_dnn
 
+## MobileNets background
+MobileNets differ from traditional CNNs through the usage of [depthwise separable convolution](https://towardsdatascience.com/a-basic-introduction-to-separable-convolutions-b99ec3102728).
+
+The general idea behind depthwise separable convolution is to split convolution into two stages:
+- A 3×3 depthwise convolution.
+- Followed by a 1×1 pointwise convolution.
+This allows to actually reduce the number of parameters in the network.
