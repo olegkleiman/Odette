@@ -24,6 +24,7 @@ std::string CLASSES[] = {"background", "aeroplane", "bicycle", "bird", "boat",
     "sofa", "train", "tvmonitor"};
 
 float confidenceThreshold = 0.2;
+string layerOutputName;
 
 void on_trackbar(int value, void *userData) {
     cout << value << endl;
@@ -32,12 +33,17 @@ void on_trackbar(int value, void *userData) {
 
 int main(int argc, const char * argv[]) {
     
-    dnn::Net caffeNet;
+    dnn::Net net;
     
     try {
         //    Edit scheme -> Options -> Working directory
-        caffeNet = dnn::readNetFromCaffe("./models/MobileNet/MobileNetSSD_deploy.prototxt.txt",
-                                         "./models/MobileNet/MobileNetSSD_deploy.caffemodel");
+        net = dnn::readNetFromCaffe("./models/MobileNet/MobileNetSSD_deploy.prototxt.txt",
+                                    "./models/MobileNet/MobileNetSSD_deploy.caffemodel");
+        net.setPreferableBackend(dnn::DNN_BACKEND_OPENCV);
+        net.setPreferableTarget(dnn::DNN_TARGET_OPENCL);
+        vector<String> layersNames = net.getLayerNames();
+        int cntLayers = (int)layersNames.size();
+        layerOutputName = layersNames[cntLayers-1];
     } catch(Exception ex) {
         cout << ex.msg << endl;
         return 1;
@@ -74,10 +80,11 @@ int main(int argc, const char * argv[]) {
         // (note: normalization is done via the authors of the MobileNet SSD
         // implementation)
         Mat inputBlob = dnn::blobFromImage(frame, 0.007843, Size(300, 300), Scalar(), true, false);
-        caffeNet.setInput(inputBlob);
-        Mat detection = caffeNet.forward();
+        net.setInput(inputBlob);
+        Mat detection = net.forward(layerOutputName);
         
-        Mat detectionMat(detection.size[2], detection.size[3], CV_32F, detection.ptr<float>());
+        MatSize detectionSize = detection.size;
+        Mat detectionMat(detectionSize[2], detectionSize[3], CV_32F, detection.ptr<float>());
         
         ostringstream ss;
         
@@ -115,7 +122,7 @@ int main(int argc, const char * argv[]) {
 
         vector<double> layersTimings;
         double tick_freq = getTickFrequency();
-        double time_ms = caffeNet.getPerfProfile(layersTimings) / tick_freq * 1000;
+        double time_ms = net.getPerfProfile(layersTimings) / tick_freq * 1000;
         putText(frame, format("FPS: %.2f ; time: %.2f ms", 1000.f / time_ms, time_ms),
                 Point(20, 20),
                 FONT_HERSHEY_SIMPLEX, 0.5, Scalar(0, 0, 255));
