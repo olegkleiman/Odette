@@ -25,10 +25,17 @@ std::string CLASSES[] = {"background", "aeroplane", "bicycle", "bird", "boat",
 
 float confidenceThreshold = 0.2;
 string layerOutputName;
+bool volatile isStopped = false;
 
 void on_trackbar(int value, void *userData) {
     cout << value << endl;
     confidenceThreshold = value/10.;
+}
+
+void mouseCallBackFunc(int event, int x, int y, int flags, void* userdata) {
+    if  ( event == EVENT_LBUTTONDOWN ) {
+        isStopped = !isStopped;
+    }
 }
 
 int main(int argc, const char * argv[]) {
@@ -56,16 +63,22 @@ int main(int argc, const char * argv[]) {
     }
     
     // Setup OpenCV GUI
-    string winName = "SSD/MobileNet", trackbarName = "Confidence Threshold";;
+    string winName = "SSD/MobileNets", trackbarName = "Confidence Threshold";;
     namedWindow(winName, WINDOW_AUTOSIZE);
     int confidenceThresholdValue = 2;
     createTrackbar(trackbarName, winName, &confidenceThresholdValue, 10, on_trackbar);
     on_trackbar(confidenceThresholdValue, 0);
+    setMouseCallback(winName, mouseCallBackFunc, NULL);
     
     Mat frame;
     
     bool odd = true;
     while( true ) {
+        
+        if( isStopped ) {
+            waitKey(1);
+            continue;
+        }
         
         capture >> frame;
 
@@ -80,7 +93,7 @@ int main(int argc, const char * argv[]) {
         // (note: normalization is done via the authors of the MobileNet SSD
         // implementation)
         Mat inputBlob = dnn::blobFromImage(frame, 0.007843, Size(300, 300), Scalar(), true, false);
-        net.setInput(inputBlob);
+        net.setInput(inputBlob);//, "", 0.5);
         Mat detection = net.forward(layerOutputName);
         
         MatSize detectionSize = detection.size;
