@@ -18,10 +18,17 @@
 using namespace std;
 using namespace cv;
 
-string ssdCLASSES[] = {"background", "aeroplane", "bicycle", "bird", "boat",
+std::string CLASSES[] = {"background", "aeroplane", "bicycle", "bird", "boat",
     "bottle", "bus", "car", "cat", "chair", "cow", "diningtable",
     "dog", "horse", "motorbike", "person", "pottedplant", "sheep",
     "sofa", "train", "tvmonitor"};
+
+float confidenceThreshold = 0.2;
+
+void on_trackbar(int value, void *userData) {
+    cout << value << endl;
+    confidenceThreshold = value/10.;
+}
 
 int main(int argc, const char * argv[]) {
     
@@ -42,8 +49,12 @@ int main(int argc, const char * argv[]) {
         return -1;
     }
     
-    string winName = "SSD/MobileNet";
+    // Setup OpenCV GUI
+    string winName = "SSD/MobileNet", trackbarName = "Confidence Threshold";;
     namedWindow(winName, WINDOW_AUTOSIZE);
+    int confidenceThresholdValue = 2;
+    createTrackbar(trackbarName, winName, &confidenceThresholdValue, 10, on_trackbar);
+    on_trackbar(confidenceThresholdValue, 0);
     
     Mat frame;
     
@@ -69,7 +80,7 @@ int main(int argc, const char * argv[]) {
         Mat detectionMat(detection.size[2], detection.size[3], CV_32F, detection.ptr<float>());
         
         ostringstream ss;
-        float confidenceThreshold = 0.2;
+        
         for (int i = 0; i < detectionMat.rows; i++) {
             
             float confidence = detectionMat.at<float>(i, 2);
@@ -87,14 +98,14 @@ int main(int argc, const char * argv[]) {
                 
                 rectangle(frame, object, Scalar(0, 255, 0), 2);
                 
-                cout << ssdCLASSES[idx] << ": " << confidence << endl;
+                cout << CLASSES[idx] << ": " << confidence << endl;
                 
                 ss.str("");
                 ss << confidence;
                 String conf(ss.str());
-                String label = ssdCLASSES[idx] + ": " + conf;
-                int baseLine = 0;
-                Size labelSize = getTextSize(label, FONT_HERSHEY_SIMPLEX, 0.5, 1, &baseLine);
+                String label = CLASSES[idx] + ": " + conf;
+//                int baseLine = 0;
+//                Size labelSize = getTextSize(label, FONT_HERSHEY_SIMPLEX, 0.5, 1, &baseLine);
                 putText(frame, label,
                         Point(xLeftBottom, yLeftBottom),
                         FONT_HERSHEY_SIMPLEX, 0.5, Scalar(255,255,255));
