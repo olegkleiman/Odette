@@ -6,7 +6,7 @@ OpenCV is the only dependency for this project. I built it with ver 3.4.3 but I 
 Install OpenCV in advance:
 - on [RaspberryPi](https://www.pyimagesearch.com/2015/02/23/install-opencv-and-python-on-your-raspberry-pi-2-and-b/)
 - on macOS, just use <i>brew</i>
-- on Windows, there is dedicated MSI.
+- on Windows with VS, use <i>NuGet</i>
 
 This is XCode project, however, you'll be able to build it from code with the linked OpenCV libs:
 - libopencv_core
