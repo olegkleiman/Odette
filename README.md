@@ -23,4 +23,4 @@ The general idea behind depthwise separable convolution is to split convolution 
 - Followed by a 1×1 pointwise convolution.
 This allows to actually reduce the number of parameters in the network.
 
-Very efficient and fast results are obtained when MobileNets is combined with SSD (Single Shot Detector) framework. In this project I use Caffe version of the [original TensorFlow implementation](https://github.com/Zehaos/MobileNet) 
+Very efficient and fast results are obtained when MobileNets is combined with SSD (Single Shot Detector) framework. In this project I use [Caffe implementation of SSD model](https://github.com/chuanqi305/MobileNet-SSD). One may use Caffe version of the [original TensorFlow implementation](https://github.com/Zehaos/MobileNet) 
