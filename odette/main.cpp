@@ -22,6 +22,7 @@ std::string CLASSES[] = {"background", "aeroplane", "bicycle", "bird", "boat",
     "bottle", "bus", "car", "cat", "chair", "cow", "diningtable",
     "dog", "horse", "motorbike", "person", "pottedplant", "sheep",
     "sofa", "train", "tvmonitor"};
+//std::string COLORS = np.random.uniform(0, 255, size=(len(CLASSES), 3))
 
 float confidenceThreshold = 0.2;
 string layerOutputName;
@@ -38,6 +39,8 @@ void mouseCallBackFunc(int event, int x, int y, int flags, void* userdata) {
     }
 }
 
+#pragma mark - Main
+
 int main(int argc, const char * argv[]) {
     
     dnn::Net net;
@@ -46,6 +49,9 @@ int main(int argc, const char * argv[]) {
         //    Edit scheme -> Options -> Working directory
         net = dnn::readNetFromCaffe("./models/MobileNet/MobileNetSSD_deploy.prototxt.txt",
                                     "./models/MobileNet/MobileNetSSD_deploy.caffemodel");
+//        net = dnn::readNetFromTensorflow("./models/MobileNet/ssd_mobilenet_v1_coco_2017_11_17.pb",
+//                                         "./models/MobileNet/ssd_mobilenet_v1_coco_2017_11_17.pbtxt"
+//                                    );
         net.setPreferableBackend(dnn::DNN_BACKEND_OPENCV);
         net.setPreferableTarget(dnn::DNN_TARGET_OPENCL);
         vector<String> layersNames = net.getLayerNames();
