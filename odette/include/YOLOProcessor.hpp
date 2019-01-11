@@ -22,11 +22,12 @@ using namespace cv;
 class YOLOProcessor : public IProcessor {
 
     private:
-        dnn::Net m_net;
-        float m_confidenceThreshold;
-        float m_nmsThreshold;
+        dnn::Net       m_net;
+        float          m_confidenceThreshold;
+        float          m_nmsThreshold;
         vector<String> m_classNamesVec;
-        vector<string> getOutputsNames(const dnn::Net& net);
+        vector<String> m_layerOutputNames;
+
         void postprocess(Mat& frame, const vector<Mat>& outs);
         void drawPred(int classId, float conf, int left, int top, int right, int bottom, Mat& frame);
     
