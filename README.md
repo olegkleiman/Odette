@@ -1,5 +1,5 @@
 # Odette
-This project demonstrates object detection capabilities of SSD for constrained environments. On most checked devices, it is excepted to play about 30 fps.
+This project demonstrates object detection capabilities of SSD/YOLOv3 for constrained environments. On most checked devices, it is excepted to play about 30 fps.
 
 ## How to build
 OpenCV is the only dependency for this project. I built it with ver 3.4.3 but I believe the newest versions are good also.
