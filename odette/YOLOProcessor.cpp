@@ -33,6 +33,8 @@ YOLOProcessor::YOLOProcessor(string pathConfig,
     
     m_confidenceThreshold = confidenceThreshold;
     m_nmsThreshold = 0.4;
+    
+    m_layerOutputNames = m_net.getUnconnectedOutLayersNames();
 }
 
 void YOLOProcessor::process(Mat frame, int nCurrentFrame,
@@ -51,7 +53,7 @@ void YOLOProcessor::process(Mat frame, int nCurrentFrame,
     m_net.setInput(inputBlob);
     
     vector<Mat> outs;
-    m_net.forward(outs, getOutputsNames(m_net));
+    m_net.forward(outs, m_layerOutputNames); //getOutputsNames(m_net));
     postprocess(frame, outs);
 
 }
@@ -124,22 +126,3 @@ void YOLOProcessor::drawPred(int classId, float conf, int left, int top, int rig
     putText(frame, label, Point(left, top), FONT_HERSHEY_SIMPLEX, 0.5, Scalar(255,255,255));
 }
 
-// Get the names of the output layers
-vector<string> YOLOProcessor::getOutputsNames(const dnn::Net& net)
-{
-    static vector<String> names;
-    if (names.empty())
-    {
-        //Get the indices of the output layers, i.e. the layers with unconnected outputs
-        vector<int> outLayers = net.getUnconnectedOutLayers();
-        
-        //get the names of all the layers in the network
-        vector<String> layersNames = net.getLayerNames();
-        
-        // Get the names of the output layers in names
-        names.resize(outLayers.size());
-        for (size_t i = 0; i < outLayers.size(); ++i)
-            names[i] = layersNames[outLayers[i] - 1];
-    }
-    return names;
-}
