@@ -1,3 +1,3 @@
 # Where is .weights files?
 
-Download and install (DarkNet)[https://pjreddie.com/darknet/install/]
+Download and install [DarkNet(https://pjreddie.com/darknet/install/)
